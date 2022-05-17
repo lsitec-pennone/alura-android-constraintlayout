@@ -1,7 +1,6 @@
 package br.com.alura.aluraviagens.ui.adapter;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,16 +11,17 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import br.com.alura.aluraviagens.util.DiasUtil;
+import br.com.alura.aluraviagens.util.MoedaUtil;
 import br.com.alura.aluraviagens.R;
+import br.com.alura.aluraviagens.util.ResourceUtil;
 import br.com.alura.aluraviagens.model.Pacote;
-
-import static android.view.LayoutInflater.from;
 
 // implementação do adapter para nos ajudar a trabalhar com a ListView
 public class ListaPacotesAdapter extends BaseAdapter {
 
     private final List<Pacote> pacotes; // lista de pacotes
-    private Context context; // contexto
+    private final Context context; // contexto
 
     // construtor do adapter
     public ListaPacotesAdapter(List<Pacote> pacotes, Context context) {
@@ -57,36 +57,55 @@ public class ListaPacotesAdapter extends BaseAdapter {
 
         Pacote pacote = pacotes.get(posicao); // pega um pacote na lista de pacotes copiada DAO
 
-        // pegamos a nossa TextView com base em seu id
-        TextView local = viewCriada.findViewById(R.id.item_pacote_local);
-        local.setText(pacote.getLocal()); // coloca o "local" da DAO na nossa View
+        mostraLocal(viewCriada, pacote);
+        mostraImagem(viewCriada, pacote);
+        mostraDias(viewCriada, pacote);
+        mostraPreco(viewCriada, pacote);
 
+        return viewCriada;
+    }
+
+    private void mostraPreco(View viewCriada, Pacote pacote) {
+        // pegamos a nossa TextView com base em seu id
+        TextView preco = viewCriada.findViewById(R.id.item_pacote_preco);
+
+        // Tratamos o formato de preço usando o getPreco() para pegarmos o "preco" da DAO
+        String moedaBrasileira = MoedaUtil.formataParaBrasileiro(pacote.getPreco());
+
+        preco.setText(moedaBrasileira); // coloca o "preco" da DAO na nossa View
+    }
+
+
+
+    private void mostraDias(View viewCriada, Pacote pacote) {
+        // pegamos a nossa TextView com base em seu id
+        TextView dias = viewCriada.findViewById(R.id.item_pacote_dias);
+
+        // fazemos a diferenciação entre "dia" e "dias"
+        // usamos os getDias() para pegarmos o "dias" da DAO
+        String diasEmTexto = DiasUtil.formataEmTexto(pacote.getDias());
+
+        dias.setText(diasEmTexto); // coloca o "dias" da DAO na nossa View
+    }
+
+    private void mostraImagem(View viewCriada, Pacote pacote) {
         // pegamos a nossa ImageView com base em se id
         ImageView imagem = viewCriada.findViewById(R.id.item_pacote_imagem);
 
         // se usarmos pacote.getImagem() retornaremos uma string copiada da lista da DAO,
         // mas o que queremos é a imagem referente à string, no caso um drawable
-        Resources resources = context.getResources(); // a partir do context pegamos os resources
-
-        // desses resources queremos um identificador do drawable
-        int idDoDrawable = resources.getIdentifier(pacote.getImagem(), // nome do recurso (String)
-                "drawable",  // tipo do recurso
-                context.getPackageName()); // pacote em que ele está
-
-        // por fim, pegamos o drawable (imagem) com base em nosso identificador
-        Drawable drawableImagemPacote = resources.getDrawable(idDoDrawable);
+        // usamos o getImagem() para pegarmos o "Imagem" da DAO
+        Drawable drawableImagemPacote = ResourceUtil.devolveDrawable(context, pacote.getImagem());
 
         // colocamos esse drawable (imagem) na nossa ImageView
         imagem.setImageDrawable(drawableImagemPacote); // imagem referente à string da DAO
+    }
 
+
+    private void mostraLocal(View viewCriada, Pacote pacote) {
         // pegamos a nossa TextView com base em seu id
-        TextView dias = viewCriada.findViewById(R.id.item_pacote_dias);
-        dias.setText(pacote.getDias() + "dias"); // coloca o "dias" da DAO na nossa View
+        TextView local = viewCriada.findViewById(R.id.item_pacote_local);
 
-        // pegamos a nossa TextView com base em seu id
-        TextView preco = viewCriada.findViewById(R.id.item_pacote_preco);
-        preco.setText(pacote.getPreco().toString()); // coloca o "preco" da DAO na nossa View
-
-        return viewCriada;
+        local.setText(pacote.getLocal()); // coloca o "local" da DAO na nossa View
     }
 }

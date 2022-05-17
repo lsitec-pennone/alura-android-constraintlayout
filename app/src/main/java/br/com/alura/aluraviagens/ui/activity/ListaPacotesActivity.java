@@ -15,13 +15,23 @@ import br.com.alura.aluraviagens.ui.adapter.ListaPacotesAdapter;
 
 public class ListaPacotesActivity extends AppCompatActivity {
 
+    public static final String TITULO_APPBAR = "Pacotes";
+
     // método onCreate indica o momento da criação do ciclo de vida da activity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState); // sobreescreve os métodos de onCreate
 
         // conteúdo da view inserido na activity
         setContentView(R.layout.activity_lista_pacotes); // activity_lista_pacotes.xml
+
+        setTitle(TITULO_APPBAR); // muda o título da appbar
+
+        configuraLista();
+    }
+
+    private void configuraLista() {
 
         // findViewById para referenciarmos nossa ListView
         ListView listaDePacotes = findViewById(R.id.lista_pacotes_listview);
