@@ -1,9 +1,12 @@
 package br.com.alura.aluraviagens.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 // modelo de um pacote
-public class Pacote {
+// Serializable é necessária para que as informações do pacote em uma activiy
+// possam ser enviadas para outras activities e entidades quando usamos intent
+public class Pacote implements Serializable {
 
     private final String local;
     private final String imagem;
